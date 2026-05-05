@@ -1,0 +1,19 @@
+{
+  "tabWidth": 4,
+  "singleQuote": true,
+  "semi": true,
+  "trailingComma": "all",
+  "printWidth": 120,
+  "endOfLine": "auto",
+  "arrowParens": "always",
+  "bracketSpacing": true,
+  "overrides": [
+    {
+      "files": "*.html",
+      "options": {
+        "tabWidth": 4,
+        "htmlWhitespaceSensitivity": "css"
+      }
+    }
+  ]
+}
