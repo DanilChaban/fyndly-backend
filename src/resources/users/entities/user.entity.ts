@@ -1,0 +1,17 @@
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { TableName } from '@app/core/enums/table-name.enum';
+
+@Entity({ name: TableName.USER })
+export class UserEntity extends BaseEntity {
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
+
+    @Column()
+    name: string;
+
+    @Column({ select: false, unique: true })
+    email: string;
+
+    @Column({ select: false })
+    password: string;
+}
