@@ -5,8 +5,8 @@ import { AuthController } from '@auth/auth.controller';
 import { JwtStrategyModule } from '@auth/jwt-strategy/jwt-strategy.module';
 
 @Module({
-    imports: [forwardRef(() => UserModule), JwtStrategyModule],
-    controllers: [AuthController],
-    providers: [AuthService],
+  imports: [forwardRef(() => UserModule), JwtStrategyModule],
+  controllers: [AuthController],
+  providers: [AuthService],
 })
 export class AuthModule {}

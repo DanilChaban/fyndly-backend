@@ -6,9 +6,9 @@ import { UserService } from '@user/user.service';
 import { UserEntity } from '@user/entities/user.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([UserEntity]), forwardRef(() => JwtStrategyModule)],
-    controllers: [UserController],
-    providers: [UserService],
-    exports: [UserService],
+  imports: [TypeOrmModule.forFeature([UserEntity]), forwardRef(() => JwtStrategyModule)],
+  controllers: [UserController],
+  providers: [UserService],
+  exports: [UserService],
 })
 export class UserModule {}

@@ -8,15 +8,15 @@ import { UserModule } from '@user/user.module';
 import { AuthModule } from '@auth/auth.module';
 
 @Module({
-    imports: [
-        TypeOrmModule.forRoot(typeormConfig),
-        ConfigModule.forRoot({
-            isGlobal: true,
-        }),
-        AuthModule,
-        UserModule,
-    ],
-    controllers: [AppController],
-    providers: [AppService],
+  imports: [
+    TypeOrmModule.forRoot(typeormConfig),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    AuthModule,
+    UserModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

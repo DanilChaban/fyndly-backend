@@ -3,11 +3,11 @@ import { User } from '@core/decorators/user.decorator';
 import { AuthGuard } from '@core/guards/auth.guard';
 import { UserEntity } from '@user/entities/user.entity';
 
+@UseGuards(AuthGuard)
 @Controller('user')
 export class UserController {
-    @Get()
-    @UseGuards(AuthGuard)
-    me(@User() user: UserEntity): UserEntity {
-        return user;
-    }
+  @Get()
+  me(@User() user: UserEntity): UserEntity {
+    return user;
+  }
 }

@@ -7,29 +7,29 @@ import { JwtStrategyService } from '@auth/jwt-strategy/jwt-strategy.service';
 
 @Injectable()
 export class AuthService {
-    constructor(
-        private readonly userService: UserService,
-        private readonly jwtStrategyService: JwtStrategyService,
-    ) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly jwtStrategyService: JwtStrategyService,
+  ) {}
 
-    async register(createUserDto: CreateUserDto): Promise<string> {
-        const user = await this.userService.createUser(createUserDto);
-        return await this.jwtStrategyService.createAccessToken(user.id, user.email);
+  async register(createUserDto: CreateUserDto): Promise<string> {
+    const user = await this.userService.createUser(createUserDto);
+    return await this.jwtStrategyService.createAccessToken(user.id, user.email);
+  }
+
+  async login(loginDto: LoginDto): Promise<string> {
+    const user = await this.userService.findUserByEmail(loginDto.email);
+
+    if (!user) {
+      throw new UnauthorizedException('Invalid email or password');
     }
 
-    async login(loginDto: LoginDto): Promise<string> {
-        const user = await this.userService.findUserByEmail(loginDto.email);
+    const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
 
-        if (!user) {
-            throw new UnauthorizedException('Invalid email or password');
-        }
-
-        const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
-
-        if (!isPasswordValid) {
-            throw new UnauthorizedException('Invalid email or password');
-        }
-
-        return await this.jwtStrategyService.createAccessToken(user.id, user.email);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Invalid email or password');
     }
+
+    return await this.jwtStrategyService.createAccessToken(user.id, user.email);
+  }
 }

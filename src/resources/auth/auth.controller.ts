@@ -7,28 +7,25 @@ import { JwtStrategyService } from '@auth/jwt-strategy/jwt-strategy.service';
 
 @Controller()
 export class AuthController {
-    constructor(
-        private readonly authService: AuthService,
-        private readonly jwtStrategyService: JwtStrategyService,
-    ) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly jwtStrategyService: JwtStrategyService,
+  ) {}
 
-    @Post('register')
-    async register(
-        @Body() createUserDto: CreateUserDto,
-        @Res({ passthrough: true }) response: Response,
-    ): Promise<void> {
-        const accessToken = await this.authService.register(createUserDto);
-        this.jwtStrategyService.setAuthCookie(response, accessToken);
-    }
+  @Post('register')
+  async register(@Body() createUserDto: CreateUserDto, @Res({ passthrough: true }) response: Response): Promise<void> {
+    const accessToken = await this.authService.register(createUserDto);
+    this.jwtStrategyService.setAuthCookie(response, accessToken);
+  }
 
-    @Post('login')
-    async login(@Body() loginDto: LoginDto, @Res({ passthrough: true }) response: Response): Promise<void> {
-        const accessToken = await this.authService.login(loginDto);
-        this.jwtStrategyService.setAuthCookie(response, accessToken);
-    }
+  @Post('login')
+  async login(@Body() loginDto: LoginDto, @Res({ passthrough: true }) response: Response): Promise<void> {
+    const accessToken = await this.authService.login(loginDto);
+    this.jwtStrategyService.setAuthCookie(response, accessToken);
+  }
 
-    @Post('logout')
-    logout(@Res({ passthrough: true }) response: Response): void {
-        response.clearCookie('access_token');
-    }
+  @Post('logout')
+  logout(@Res({ passthrough: true }) response: Response): void {
+    response.clearCookie('access_token');
+  }
 }
