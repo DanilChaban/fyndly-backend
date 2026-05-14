@@ -7,7 +7,7 @@ export class UserEntity extends BaseEntity {
   id: string;
 
   @Column()
-  name: string;
+  username: string;
 
   @Column({ select: false, unique: true })
   email: string;

@@ -34,7 +34,8 @@ export class UserService {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = this.userRepository.create({
-      ...userData,
+      username: userData.username,
+      email: userData.email,
       password: hashedPassword,
     });
 

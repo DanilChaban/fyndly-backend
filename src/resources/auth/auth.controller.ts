@@ -12,15 +12,15 @@ export class AuthController {
     private readonly jwtStrategyService: JwtStrategyService,
   ) {}
 
-  @Post('register')
-  async register(@Body() createUserDto: CreateUserDto, @Res({ passthrough: true }) response: Response): Promise<void> {
-    const accessToken = await this.authService.register(createUserDto);
+  @Post('sign-up')
+  async signUp(@Body() createUserDto: CreateUserDto, @Res({ passthrough: true }) response: Response): Promise<void> {
+    const accessToken = await this.authService.signUp(createUserDto);
     this.jwtStrategyService.setAuthCookie(response, accessToken);
   }
 
-  @Post('login')
-  async login(@Body() loginDto: LoginDto, @Res({ passthrough: true }) response: Response): Promise<void> {
-    const accessToken = await this.authService.login(loginDto);
+  @Post('sign-in')
+  async signIn(@Body() loginDto: LoginDto, @Res({ passthrough: true }) response: Response): Promise<void> {
+    const accessToken = await this.authService.signIn(loginDto);
     this.jwtStrategyService.setAuthCookie(response, accessToken);
   }
 

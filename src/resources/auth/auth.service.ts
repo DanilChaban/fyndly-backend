@@ -12,12 +12,12 @@ export class AuthService {
     private readonly jwtStrategyService: JwtStrategyService,
   ) {}
 
-  async register(createUserDto: CreateUserDto): Promise<string> {
+  async signUp(createUserDto: CreateUserDto): Promise<string> {
     const user = await this.userService.createUser(createUserDto);
     return await this.jwtStrategyService.createAccessToken(user.id, user.email);
   }
 
-  async login(loginDto: LoginDto): Promise<string> {
+  async signIn(loginDto: LoginDto): Promise<string> {
     const user = await this.userService.findUserByEmail(loginDto.email);
 
     if (!user) {
