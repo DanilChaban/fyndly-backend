@@ -30,6 +30,6 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    return await this.jwtStrategyService.createAccessToken(user.id, user.email);
+    return await this.jwtStrategyService.createAccessToken(user.id, user.email, loginDto.rememberMe);
   }
 }

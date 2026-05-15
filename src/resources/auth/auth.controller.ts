@@ -21,11 +21,11 @@ export class AuthController {
   @Post('sign-in')
   async signIn(@Body() loginDto: LoginDto, @Res({ passthrough: true }) response: Response): Promise<void> {
     const accessToken = await this.authService.signIn(loginDto);
-    this.jwtStrategyService.setAuthCookie(response, accessToken);
+    this.jwtStrategyService.setAuthCookie(response, accessToken, loginDto.rememberMe);
   }
 
   @Post('logout')
   logout(@Res({ passthrough: true }) response: Response): void {
-    response.clearCookie('access_token');
+    this.jwtStrategyService.clearAuthCookie(response);
   }
 }
