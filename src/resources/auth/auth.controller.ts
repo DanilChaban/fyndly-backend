@@ -1,6 +1,8 @@
 import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import type { Request, Response } from 'express';
+import { GoogleAuthGuard } from '@core/guards/google-auth.guard';
+import { LanguageCode } from '@core/types/language-code';
 import { CreateUserDto } from '@user/dto/create-user.dto';
 import { UserEntity } from '@user/entities/user.entity';
 import { AuthService } from '@auth/auth.service';
@@ -27,7 +29,7 @@ export class AuthController {
   }
 
   @Get('google')
-  @UseGuards(AuthGuard('google'))
+  @UseGuards(GoogleAuthGuard)
   googleAuth(): void {}
 
   @Get('google/callback')
@@ -35,8 +37,9 @@ export class AuthController {
   async googleCallback(@Req() request: Request, @Res() response: Response): Promise<void> {
     const googleUser = request['user'] as UserEntity;
     const accessToken = await this.authService.signInWithGoogle(googleUser);
+    const lang = request.query.lang as LanguageCode;
     this.jwtStrategyService.setAuthCookie(response, accessToken, true);
-    response.redirect(`${process.env.FRONTEND_URL}/en/home`);
+    response.redirect(`${process.env.FRONTEND_URL}/${lang}/home`);
   }
 
   @Post('logout')
