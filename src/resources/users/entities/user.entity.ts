@@ -6,12 +6,15 @@ export class UserEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ name: 'google_id', type: 'varchar', nullable: true })
+  googleId: string | null;
+
+  @Column({ nullable: true })
   username: string;
 
   @Column({ select: false, unique: true })
   email: string;
 
-  @Column({ select: false })
+  @Column({ nullable: true, select: false })
   password: string;
 }

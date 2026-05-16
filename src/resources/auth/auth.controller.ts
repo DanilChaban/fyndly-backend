@@ -1,9 +1,11 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
-import type { Response } from 'express';
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import type { Request, Response } from 'express';
 import { CreateUserDto } from '@user/dto/create-user.dto';
+import { UserEntity } from '@user/entities/user.entity';
 import { AuthService } from '@auth/auth.service';
 import { LoginDto } from '@auth/dto/login.dto';
-import { JwtStrategyService } from '@auth/jwt-strategy/jwt-strategy.service';
+import { JwtStrategyService } from '@auth/strategies/jwt-strategy/jwt-strategy.service';
 
 @Controller()
 export class AuthController {
@@ -22,6 +24,19 @@ export class AuthController {
   async signIn(@Body() loginDto: LoginDto, @Res({ passthrough: true }) response: Response): Promise<void> {
     const accessToken = await this.authService.signIn(loginDto);
     this.jwtStrategyService.setAuthCookie(response, accessToken, loginDto.rememberMe);
+  }
+
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  googleAuth(): void {}
+
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  async googleCallback(@Req() request: Request, @Res() response: Response): Promise<void> {
+    const googleUser = request['user'] as UserEntity;
+    const accessToken = await this.authService.signInWithGoogle(googleUser);
+    this.jwtStrategyService.setAuthCookie(response, accessToken, true);
+    response.redirect(`${process.env.FRONTEND_URL}/en/home`);
   }
 
   @Post('logout')

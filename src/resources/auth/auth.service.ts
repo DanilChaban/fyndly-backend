@@ -2,8 +2,9 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UserService } from '@user/user.service';
 import { CreateUserDto } from '@user/dto/create-user.dto';
+import { UserEntity } from '@user/entities/user.entity';
 import { LoginDto } from '@auth/dto/login.dto';
-import { JwtStrategyService } from '@auth/jwt-strategy/jwt-strategy.service';
+import { JwtStrategyService } from '@auth/strategies/jwt-strategy/jwt-strategy.service';
 
 @Injectable()
 export class AuthService {
@@ -24,6 +25,10 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
+    if (!user.password) {
+      throw new UnauthorizedException('Invalid email or password');
+    }
+
     const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
 
     if (!isPasswordValid) {
@@ -31,5 +36,10 @@ export class AuthService {
     }
 
     return await this.jwtStrategyService.createAccessToken(user.id, user.email, loginDto.rememberMe);
+  }
+
+  async signInWithGoogle(googleUser: UserEntity): Promise<string> {
+    const user = await this.userService.findOrCreateGoogleUser(googleUser);
+    return await this.jwtStrategyService.createAccessToken(user.id, user.email);
   }
 }

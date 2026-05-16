@@ -8,14 +8,14 @@ import { ONE_DAY_MS, THIRTY_DAYS_MS } from '@auth/constants/constants';
 export class JwtStrategyService {
   constructor(private readonly jwtService: JwtService) {}
 
-  createAccessToken(userId: string, email: string, rememberMe): Promise<string> {
+  createAccessToken(userId: string, email: string, rememberMe = false): Promise<string> {
     return this.jwtService.signAsync({ sub: userId, email }, { expiresIn: rememberMe ? '30d' : '1d' });
   }
 
-  setAuthCookie(response: Response, token: string, rememberMe): void {
+  setAuthCookie(response: Response, token: string, rememberMe = false): void {
     response.cookie(ACCESS_TOKEN, token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV !== 'production',
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: rememberMe ? THIRTY_DAYS_MS : ONE_DAY_MS,
       path: '/',

@@ -42,7 +42,23 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
+  async findOrCreateGoogleUser(googleUser: UserEntity): Promise<UserEntity> {
+    const existingUser = await this.findUserByEmail(googleUser.email);
+
+    if (existingUser) {
+      return existingUser;
+    }
+
+    const user = this.userRepository.create({
+      email: googleUser.email,
+      googleId: googleUser.googleId,
+      username: googleUser.username,
+    });
+
+    return this.userRepository.save(user);
+  }
+
   async findUserByEmail(email: string): Promise<UserEntity | null> {
-    return this.userRepository.findOne({ where: { email }, select: ['email', 'password'] });
+    return this.userRepository.findOne({ where: { email }, select: ['email'] });
   }
 }
