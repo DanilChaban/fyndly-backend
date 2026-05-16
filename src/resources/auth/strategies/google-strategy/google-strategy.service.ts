@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
 import { Profile, Strategy, VerifyCallback } from 'passport-google-oauth20';
-import { UserEntity } from '@user/entities/user.entity';
+import { GoogleUser } from '@user/types/google-user';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
@@ -22,7 +22,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       return done(new Error('Google account email was not provided'), false);
     }
 
-    const user: Partial<UserEntity> = {
+    const user: GoogleUser = {
       googleId: profile.id,
       email,
       username: profile.displayName,

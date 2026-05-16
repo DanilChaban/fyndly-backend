@@ -4,7 +4,7 @@ import type { Request, Response } from 'express';
 import { GoogleAuthGuard } from '@core/guards/google-auth.guard';
 import { LanguageCode } from '@core/types/language-code';
 import { CreateUserDto } from '@user/dto/create-user.dto';
-import { UserEntity } from '@user/entities/user.entity';
+import { GoogleUser } from '@user/types/google-user';
 import { AuthService } from '@auth/auth.service';
 import { LoginDto } from '@auth/dto/login.dto';
 import { JwtStrategyService } from '@auth/strategies/jwt-strategy/jwt-strategy.service';
@@ -35,7 +35,7 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   async googleCallback(@Req() request: Request, @Res() response: Response): Promise<void> {
-    const googleUser = request['user'] as UserEntity;
+    const googleUser = request['user'] as GoogleUser;
     const accessToken = await this.authService.signInWithGoogle(googleUser);
     const lang = request.query.lang as LanguageCode;
     this.jwtStrategyService.setAuthCookie(response, accessToken, true);

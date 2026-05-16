@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UserService } from '@user/user.service';
 import { CreateUserDto } from '@user/dto/create-user.dto';
-import { UserEntity } from '@user/entities/user.entity';
+import { GoogleUser } from '@user/types/google-user';
 import { LoginDto } from '@auth/dto/login.dto';
 import { JwtStrategyService } from '@auth/strategies/jwt-strategy/jwt-strategy.service';
 
@@ -38,7 +38,7 @@ export class AuthService {
     return await this.jwtStrategyService.createAccessToken(user.id, user.email, loginDto.rememberMe);
   }
 
-  async signInWithGoogle(googleUser: UserEntity): Promise<string> {
+  async signInWithGoogle(googleUser: GoogleUser): Promise<string> {
     const user = await this.userService.findOrCreateGoogleUser(googleUser);
     return await this.jwtStrategyService.createAccessToken(user.id, user.email);
   }

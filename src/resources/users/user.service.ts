@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserEntity } from '@user/entities/user.entity';
 import { CreateUserDto } from '@user/dto/create-user.dto';
+import { GoogleUser } from '@user/types/google-user';
 
 @Injectable()
 export class UserService {
@@ -42,7 +43,7 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
-  async findOrCreateGoogleUser(googleUser: UserEntity): Promise<UserEntity> {
+  async findOrCreateGoogleUser(googleUser: GoogleUser): Promise<UserEntity> {
     const existingUser = await this.findUserByEmail(googleUser.email);
 
     if (existingUser) {
