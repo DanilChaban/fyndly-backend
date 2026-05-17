@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { ApiErrorCode } from '@core/enums/api-error-code.enum';
 import { UserService } from '@user/user.service';
 import { CreateUserDto } from '@user/dto/create-user.dto';
 import { GoogleUser } from '@user/types/google-user';
@@ -21,18 +22,14 @@ export class AuthService {
   async signIn(loginDto: LoginDto): Promise<string> {
     const user = await this.userService.findUserByEmail(loginDto.email);
 
-    if (!user) {
-      throw new UnauthorizedException('Invalid email or password');
-    }
-
-    if (!user.password) {
-      throw new UnauthorizedException('Invalid email or password');
+    if (!user || !user.password) {
+      throw new UnauthorizedException(ApiErrorCode.INVALID_CREDENTIALS);
     }
 
     const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
 
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new UnauthorizedException(ApiErrorCode.INVALID_CREDENTIALS);
     }
 
     return await this.jwtStrategyService.createAccessToken(user.id, user.email, loginDto.rememberMe);

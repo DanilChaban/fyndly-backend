@@ -2,6 +2,8 @@ import { BadRequestException, ConflictException, Injectable } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { ApiErrorCode } from '@core/enums/api-error-code.enum';
+import { createFieldError } from '@core/helpers/create-field-error';
 import { UserEntity } from '@user/entities/user.entity';
 import { CreateUserDto } from '@user/dto/create-user.dto';
 import { GoogleUser } from '@user/types/google-user';
@@ -14,29 +16,33 @@ export class UserService {
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
-    if (!createUserDto) {
-      throw new BadRequestException('Request body is required');
-    }
-
-    const { password, confirmPassword, ...userData } = createUserDto;
+    const { password, confirmPassword, email, username } = createUserDto;
 
     if (password !== confirmPassword) {
-      throw new BadRequestException('Passwords do not match');
+      throw new BadRequestException(createFieldError('confirmPassword', ApiErrorCode.PASSWORD_DO_NOT_MATCH));
     }
 
-    const userExist = await this.userRepository.findOne({
-      where: { email: createUserDto.email },
+    const emailExists = await this.userRepository.findOne({
+      where: { email },
     });
 
-    if (userExist) {
-      throw new ConflictException('User with this email already exists');
+    if (emailExists) {
+      throw new ConflictException(createFieldError('email', ApiErrorCode.EMAIL_ALREADY_EXISTS));
+    }
+
+    const usernameExists = await this.userRepository.findOne({
+      where: { username },
+    });
+
+    if (usernameExists) {
+      throw new ConflictException(createFieldError('username', ApiErrorCode.USERNAME_ALREADY_EXISTS));
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = this.userRepository.create({
-      username: userData.username,
-      email: userData.email,
+      username,
+      email,
       password: hashedPassword,
     });
 

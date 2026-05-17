@@ -1,12 +1,13 @@
 import { Optional } from '@nestjs/common';
 import { IsBoolean, IsEmail, IsString, MinLength } from 'class-validator';
+import { ApiErrorCode } from '@core/enums/api-error-code.enum';
 
 export class LoginDto {
-  @IsEmail()
+  @IsEmail({}, { message: ApiErrorCode.VALIDATION_EMAIL })
   email: string;
 
-  @IsString()
-  @MinLength(8)
+  @IsString({ message: ApiErrorCode.VALIDATION_INVALID })
+  @MinLength(8, { message: ApiErrorCode.VALIDATION_MIN_LENGTH })
   password: string;
 
   @Optional()
