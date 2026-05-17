@@ -66,6 +66,6 @@ export class UserService {
   }
 
   async findUserByEmail(email: string): Promise<UserEntity | null> {
-    return this.userRepository.findOne({ where: { email }, select: ['email'] });
+    return this.userRepository.findOne({ where: { email }, select: ['email', 'password'] });
   }
 }
