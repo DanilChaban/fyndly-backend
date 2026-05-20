@@ -26,6 +26,7 @@
       "@core/*": ["./src/core/*"],
       "@user/*": ["./src/resources/users/*"],
       "@auth/*": ["./src/resources/auth/*"],
+      "@email/*": ["./src/resources/email/*"],
     }
   }
 }

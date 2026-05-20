@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { ApiErrorCode } from '@core/enums/api-error-code.enum';
 import { createFieldError } from '@core/helpers/create-field-error';
 import { generateVerificationCode } from '@core/helpers/generate-verification-code';
+import { EmailService } from '@email/email.service';
 import { UserEntity } from '@user/entities/user.entity';
 import { CreateUserDto } from '@user/dto/create-user.dto';
 import { GoogleUser } from '@user/types/google-user';
@@ -19,6 +20,7 @@ export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    private readonly emailService: EmailService,
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
@@ -45,20 +47,21 @@ export class UserService {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const generateCode = generateVerificationCode();
+    const verificationCode = generateVerificationCode();
 
     const user = this.userRepository.create({
       username,
       email,
       password: hashedPassword,
       emailVerified: false,
-      emailVerificationCode: generateCode,
+      emailVerificationCode: verificationCode,
       emailVerificationCodeExpiresAt: this.VERIFICATION_CODE_TTL_MS,
     });
 
-    console.log(`Verification code: ${generateCode}`);
+    const savedUser = await this.userRepository.save(user);
 
-    return this.userRepository.save(user);
+    await this.emailService.sendVerificationCode(savedUser.email, verificationCode);
+    return savedUser;
   }
 
   async verifyEmail(verifyEmailDto: VerifyEmailDto): Promise<UserEntity> {
@@ -121,15 +124,14 @@ export class UserService {
       }
     }
 
-    const generateCode = generateVerificationCode();
+    const verificationCode = generateVerificationCode();
 
-    user.emailVerificationCode = generateCode;
+    user.emailVerificationCode = verificationCode;
     user.emailVerificationCodeExpiresAt = this.VERIFICATION_CODE_TTL_MS;
     user.emailVerificationCodeLastSentAt = new Date();
 
-    console.log(`Verification code: ${generateCode}`);
-
     await this.userRepository.save(user);
+    await this.emailService.sendVerificationCode(user.email, verificationCode);
   }
 
   async findOrCreateGoogleUser(googleUser: GoogleUser): Promise<UserEntity> {
