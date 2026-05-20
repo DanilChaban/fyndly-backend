@@ -17,4 +17,16 @@ export class UserEntity extends BaseEntity {
 
   @Column({ nullable: true })
   password: string;
+
+  @Column({ type: 'boolean', default: false })
+  emailVerified: boolean;
+
+  @Column({ type: 'varchar', nullable: true, select: true })
+  emailVerificationCode: string | null;
+
+  @Column({ type: 'timestamp', nullable: true, select: true })
+  emailVerificationCodeExpiresAt: Date | null;
+
+  @Column({ type: 'timestamp', nullable: true, select: true })
+  emailVerificationCodeLastSentAt: Date | null;
 }
