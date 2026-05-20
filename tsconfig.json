@@ -22,7 +22,10 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@app/*": ["./src/*"]
+      "@app/*": ["./src/*"],
+      "@core/*": ["./src/core/*"],
+      "@user/*": ["./src/resources/users/*"],
+      "@auth/*": ["./src/resources/auth/*"],
     }
   }
 }
