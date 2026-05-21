@@ -151,6 +151,8 @@ export class UserService {
 
         return this.userRepository.save(existingUser);
       }
+
+      return existingUser;
     }
 
     const user = this.userRepository.create({

@@ -21,7 +21,7 @@ export class AuthService {
   }
 
   async signIn(loginDto: LoginDto): Promise<string> {
-    const user = await this.userService.findUserByEmail(loginDto.email, 'password');
+    const user = await this.userService.findUserByEmail(loginDto.email, 'password', 'emailVerified');
 
     if (!user || !user.password) {
       throw new UnauthorizedException(ApiErrorCode.INVALID_CREDENTIALS);
@@ -31,6 +31,10 @@ export class AuthService {
 
     if (!isPasswordValid) {
       throw new UnauthorizedException(ApiErrorCode.INVALID_CREDENTIALS);
+    }
+
+    if (!user.emailVerified) {
+      throw new UnauthorizedException(ApiErrorCode.EMAIL_NOT_VERIFIED);
     }
 
     return await this.jwtStrategyService.createAccessToken(user.id, user.email, loginDto.rememberMe);
