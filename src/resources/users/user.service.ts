@@ -14,7 +14,7 @@ import { ResendVerificationCodeDto } from '@user/dto/resend-verification-code.dt
 
 @Injectable()
 export class UserService {
-  private VERIFICATION_CODE_TTL_MS = new Date(Date.now() + 10 * 60 * 1000);
+  private VERIFICATION_CODE_TTL_MS = 10 * 60 * 1000;
   private VERIFICATION_CODE_RESEND_COOLDOWN_MS = 30 * 1000;
 
   constructor(
@@ -55,7 +55,7 @@ export class UserService {
       password: hashedPassword,
       emailVerified: false,
       emailVerificationCode: verificationCode,
-      emailVerificationCodeExpiresAt: this.VERIFICATION_CODE_TTL_MS,
+      emailVerificationCodeExpiresAt: this.getVerificationCodeExpiresAt(),
     });
 
     const savedUser = await this.userRepository.save(user);
@@ -127,7 +127,7 @@ export class UserService {
     const verificationCode = generateVerificationCode();
 
     user.emailVerificationCode = verificationCode;
-    user.emailVerificationCodeExpiresAt = this.VERIFICATION_CODE_TTL_MS;
+    user.emailVerificationCodeExpiresAt = this.getVerificationCodeExpiresAt();
     user.emailVerificationCodeLastSentAt = new Date();
 
     await this.userRepository.save(user);
@@ -165,5 +165,9 @@ export class UserService {
 
   async findUserByEmail(email: string, ...select: (keyof UserEntity)[]): Promise<UserEntity | null> {
     return this.userRepository.findOne({ where: { email }, select: ['id', 'email', ...select] });
+  }
+
+  private getVerificationCodeExpiresAt(): Date {
+    return new Date(Date.now() + this.VERIFICATION_CODE_TTL_MS);
   }
 }
