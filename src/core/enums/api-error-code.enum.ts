@@ -7,4 +7,9 @@ export enum ApiErrorCode {
   EMAIL_ALREADY_EXISTS = 'email_already_exists',
   USERNAME_ALREADY_EXISTS = 'username_already_exists',
   INVALID_CREDENTIALS = 'invalid_credentials',
+  USER_NOT_FOUND = 'user_not_found',
+  INVALID_VERIFICATION_CODE = 'invalid_verification_code',
+  VERIFICATION_CODE_EXPIRED = 'verification_code_expired',
+  EMAIL_NOT_VERIFIED = 'email_not_verified',
+  VERIFICATION_CODE_RESEND_TOO_SOON = 'verification_code_resend_too_soon',
 }

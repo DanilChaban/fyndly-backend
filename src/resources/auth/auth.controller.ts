@@ -5,6 +5,8 @@ import { GoogleAuthGuard } from '@core/guards/google-auth.guard';
 import { LanguageCode } from '@core/types/language-code';
 import { CreateUserDto } from '@user/dto/create-user.dto';
 import { GoogleUser } from '@user/types/google-user';
+import { VerifyEmailDto } from '@user/dto/verify-email.dto';
+import { ResendVerificationCodeDto } from '@user/dto/resend-verification-code.dto';
 import { AuthService } from '@auth/auth.service';
 import { LoginDto } from '@auth/dto/login.dto';
 import { JwtStrategyService } from '@auth/strategies/jwt-strategy/jwt-strategy.service';
@@ -17,9 +19,8 @@ export class AuthController {
   ) {}
 
   @Post('sign-up')
-  async signUp(@Body() createUserDto: CreateUserDto, @Res({ passthrough: true }) response: Response): Promise<void> {
-    const accessToken = await this.authService.signUp(createUserDto);
-    this.jwtStrategyService.setAuthCookie(response, accessToken);
+  async signUp(@Body() createUserDto: CreateUserDto): Promise<void> {
+    await this.authService.signUp(createUserDto);
   }
 
   @Post('sign-in')
@@ -40,6 +41,20 @@ export class AuthController {
     const lang = request.query.lang as LanguageCode;
     this.jwtStrategyService.setAuthCookie(response, accessToken, true);
     response.redirect(`${process.env.FRONTEND_URL}/${lang}/home`);
+  }
+
+  @Post('verify-email')
+  async verifyEmail(
+    @Body() verifyEmailDto: VerifyEmailDto,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<void> {
+    const accessToken = await this.authService.verifyEmail(verifyEmailDto);
+    this.jwtStrategyService.setAuthCookie(response, accessToken);
+  }
+
+  @Post('resend-verification-code')
+  async resendVerificationCode(@Body() resendVerificationCodeDto: ResendVerificationCodeDto): Promise<void> {
+    await this.authService.resendVerificationCode(resendVerificationCodeDto);
   }
 
   @Post('logout')
