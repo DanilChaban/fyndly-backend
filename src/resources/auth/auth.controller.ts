@@ -38,7 +38,7 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   async googleCallback(@Req() request: Request, @Res() response: Response): Promise<void> {
     const googleUser = request['user'] as GoogleUser;
-    const lang = request.query.lang as LanguageCode;
+    const lang = request.query.state as LanguageCode;
     try {
       const accessToken = await this.authService.signInWithGoogle(googleUser);
       this.jwtStrategyService.setAuthCookie(response, accessToken, true);
