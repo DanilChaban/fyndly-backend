@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import type { Request, Response } from 'express';
 import { GoogleAuthGuard } from '@core/guards/google-auth.guard';
 import { LanguageCode } from '@core/types/language-code';
+import { ApiErrorCode } from '@core/enums/api-error-code.enum';
 import { CreateUserDto } from '@user/dto/create-user.dto';
 import { GoogleUser } from '@user/types/google-user';
 import { VerifyEmailDto } from '@user/dto/verify-email.dto';
@@ -37,10 +38,18 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   async googleCallback(@Req() request: Request, @Res() response: Response): Promise<void> {
     const googleUser = request['user'] as GoogleUser;
-    const accessToken = await this.authService.signInWithGoogle(googleUser);
     const lang = request.query.lang as LanguageCode;
-    this.jwtStrategyService.setAuthCookie(response, accessToken, true);
-    response.redirect(`${process.env.FRONTEND_URL}/${lang}/home`);
+    try {
+      const accessToken = await this.authService.signInWithGoogle(googleUser);
+      this.jwtStrategyService.setAuthCookie(response, accessToken, true);
+      response.redirect(`${process.env.FRONTEND_URL}/${lang}/home`);
+    } catch (error) {
+      const errorCode =
+        error instanceof UnauthorizedException ? ApiErrorCode.EMAIL_NOT_VERIFIED : ApiErrorCode.INVALID_CREDENTIALS;
+      const redirectUrl = new URL(`${process.env.FRONTEND_URL}/${lang}/sign-in`);
+      redirectUrl.searchParams.set('error', errorCode);
+      response.redirect(redirectUrl.toString());
+    }
   }
 
   @Post('verify-email')
