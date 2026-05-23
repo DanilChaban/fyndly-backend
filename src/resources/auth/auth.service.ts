@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { ApiErrorCode } from '@core/enums/api-error-code.enum';
 import { UserService } from '@user/user.service';
@@ -34,7 +34,7 @@ export class AuthService {
     }
 
     if (!user.emailVerified) {
-      throw new UnauthorizedException(ApiErrorCode.EMAIL_NOT_VERIFIED);
+      throw new ForbiddenException(ApiErrorCode.EMAIL_NOT_VERIFIED);
     }
 
     return await this.jwtStrategyService.createAccessToken(user.id, user.email, loginDto.rememberMe);

@@ -3,7 +3,7 @@ import { ErrorFieldsMessage } from '@core/types/error-field-message';
 
 export function createFieldError(field: string, code: ApiErrorCode): ErrorFieldsMessage {
   return {
-    code: ApiErrorCode.VALIDATION_ERROR,
+    code,
     fields: [
       {
         code,

@@ -88,7 +88,7 @@ export class UserService {
     const expiresAt = user.emailVerificationCodeExpiresAt;
 
     if (!expiresAt || expiresAt.getTime() < Date.now()) {
-      throw new BadRequestException(createFieldError('code', ApiErrorCode.VERIFICATION_CODE_EXPIRED));
+      throw new BadRequestException(ApiErrorCode.VERIFICATION_CODE_EXPIRED);
     }
 
     user.emailVerified = true;
