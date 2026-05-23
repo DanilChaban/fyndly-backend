@@ -24,7 +24,7 @@
     "paths": {
       "@app/*": ["./src/*"],
       "@core/*": ["./src/core/*"],
-      "@user/*": ["./src/resources/users/*"],
+      "@user/*": ["./src/resources/user/*"],
       "@auth/*": ["./src/resources/auth/*"],
       "@email/*": ["./src/resources/email/*"],
     }

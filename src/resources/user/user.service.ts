@@ -8,9 +8,9 @@ import { generateVerificationCode } from '@core/helpers/generate-verification-co
 import { EmailService } from '@email/email.service';
 import { UserEntity } from '@user/entities/user.entity';
 import { CreateUserDto } from '@user/dto/create-user.dto';
-import { GoogleUser } from '@user/types/google-user';
 import { VerifyEmailDto } from '@user/dto/verify-email.dto';
 import { ResendVerificationCodeDto } from '@user/dto/resend-verification-code.dto';
+import { GoogleUser } from '@user/types/google-user';
 
 @Injectable()
 export class UserService {
