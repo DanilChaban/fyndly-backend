@@ -48,6 +48,7 @@ export class AuthController {
         error instanceof UnauthorizedException ? ApiErrorCode.EMAIL_NOT_VERIFIED : ApiErrorCode.INVALID_CREDENTIALS;
       const redirectUrl = new URL(`${process.env.FRONTEND_URL}/${lang}/sign-in`);
       redirectUrl.searchParams.set('error', errorCode);
+      redirectUrl.searchParams.set('email', googleUser.email);
       response.redirect(redirectUrl.toString());
     }
   }
