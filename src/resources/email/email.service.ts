@@ -32,4 +32,24 @@ export class EmailService {
       `,
     });
   }
+
+  async sendResetPasswordCode(email: string, code: string): Promise<void> {
+    await this.transporter.sendMail({
+      from: process.env.SMTP_FROM,
+      to: email,
+      subject: 'Your Fyndly password reset code',
+      text: `Your Fyndly password reset code is ${code}. It is valid for 10 minutes.`,
+      html: `
+      <div style="font-family: Arial, sans-serif; color: #182235;">
+        <h2>Reset your password</h2>
+        <p>Your Fyndly password reset code is:</p>
+        <div style="font-size: 28px; font-weight: 700; letter-spacing: 6px; margin: 20px 0;">
+          ${code}
+        </div>
+        <p>This code is valid for 10 minutes.</p>
+        <p>If you did not request a password reset, you can ignore this email.</p>
+      </div>
+    `,
+    });
+  }
 }

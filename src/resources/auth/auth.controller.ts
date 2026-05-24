@@ -8,6 +8,8 @@ import { CreateUserDto } from '@user/dto/create-user.dto';
 import { GoogleUser } from '@user/types/google-user';
 import { VerifyEmailDto } from '@user/dto/verify-email.dto';
 import { ResendVerificationCodeDto } from '@user/dto/resend-verification-code.dto';
+import { ForgotPasswordDto } from '@user/dto/forgot-password.dto';
+import { ResetPasswordDto } from '@user/dto/reset-password-dto';
 import { AuthService } from '@auth/auth.service';
 import { LoginDto } from '@auth/dto/login.dto';
 import { JwtStrategyService } from '@auth/strategies/jwt-strategy/jwt-strategy.service';
@@ -65,6 +67,21 @@ export class AuthController {
   @Post('resend-verification-code')
   async resendVerificationCode(@Body() resendVerificationCodeDto: ResendVerificationCodeDto): Promise<void> {
     await this.authService.resendVerificationCode(resendVerificationCodeDto);
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto): Promise<void> {
+    await this.authService.forgotPassword(forgotPasswordDto);
+  }
+
+  @Post('resend-reset-password-code')
+  async resendResetPassword(@Body() forgotPasswordDto: ForgotPasswordDto): Promise<void> {
+    await this.authService.resendResetPassword(forgotPasswordDto);
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto): Promise<void> {
+    await this.authService.resetPassword(resetPasswordDto);
   }
 
   @Post('logout')

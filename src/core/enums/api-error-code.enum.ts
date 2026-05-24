@@ -12,4 +12,7 @@ export enum ApiErrorCode {
   VERIFICATION_CODE_EXPIRED = 'verification_code_expired',
   EMAIL_NOT_VERIFIED = 'email_not_verified',
   VERIFICATION_CODE_RESEND_TOO_SOON = 'verification_code_resend_too_soon',
+  RESET_PASSWORD_CODE_EXPIRED = 'reset_password_code_expired',
+  INVALID_RESET_PASSWORD_CODE = 'invalid_reset_password_code',
+  RESET_PASSWORD_CODE_RESEND_TOO_SOON = 'reset_password_code_resend_too_soon',
 }
