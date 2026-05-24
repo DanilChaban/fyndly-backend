@@ -15,4 +15,5 @@ export enum ApiErrorCode {
   RESET_PASSWORD_CODE_EXPIRED = 'reset_password_code_expired',
   INVALID_RESET_PASSWORD_CODE = 'invalid_reset_password_code',
   RESET_PASSWORD_CODE_RESEND_TOO_SOON = 'reset_password_code_resend_too_soon',
+  NEW_PASSWORD_MUST_BE_DIFFERENT = 'new_password_must_be_different',
 }

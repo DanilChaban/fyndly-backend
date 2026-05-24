@@ -221,6 +221,14 @@ export class UserService {
       throw new BadRequestException(createFieldError('code', ApiErrorCode.RESET_PASSWORD_CODE_EXPIRED));
     }
 
+    if (user.password) {
+      const isSamePassword = await bcrypt.compare(password, user.password);
+
+      if (isSamePassword) {
+        throw new BadRequestException(createFieldError('password', ApiErrorCode.NEW_PASSWORD_MUST_BE_DIFFERENT));
+      }
+    }
+
     user.password = await bcrypt.hash(password, 10);
     user.resetPasswordCode = null;
     user.resetPasswordCodeExpiresAt = null;
