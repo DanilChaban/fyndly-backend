@@ -173,7 +173,7 @@ export class UserService {
     const user = await this.findUserByEmail(email, 'resetPasswordCodeLastSentAt');
 
     if (!user) {
-      throw new BadRequestException(ApiErrorCode.USER_NOT_FOUND);
+      throw new BadRequestException(createFieldError('email', ApiErrorCode.USER_NOT_FOUND));
     }
 
     const retryAfterSeconds = getRetryAfterSeconds(
