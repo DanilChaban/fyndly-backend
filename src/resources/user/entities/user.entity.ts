@@ -1,5 +1,5 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { TableName } from '@app/core/enums/table-name.enum';
+import { TableName } from '@core/enums/table-name.enum';
 
 @Entity({ name: TableName.USER })
 export class UserEntity extends BaseEntity {
@@ -29,4 +29,13 @@ export class UserEntity extends BaseEntity {
 
   @Column({ type: 'timestamp', nullable: true, select: true })
   emailVerificationCodeLastSentAt: Date | null;
+
+  @Column({ type: 'varchar', nullable: true, select: true })
+  resetPasswordCode: string | null;
+
+  @Column({ type: 'timestamp', nullable: true, select: true })
+  resetPasswordCodeExpiresAt: Date | null;
+
+  @Column({ type: 'timestamp', nullable: true, select: true })
+  resetPasswordCodeLastSentAt: Date | null;
 }

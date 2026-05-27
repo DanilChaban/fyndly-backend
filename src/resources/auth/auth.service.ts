@@ -6,8 +6,10 @@ import { CreateUserDto } from '@user/dto/create-user.dto';
 import { VerifyEmailDto } from '@user/dto/verify-email.dto';
 import { ResendVerificationCodeDto } from '@user/dto/resend-verification-code.dto';
 import { GoogleUser } from '@user/types/google-user';
-import { LoginDto } from '@auth/dto/login.dto';
 import { JwtStrategyService } from '@auth/strategies/jwt-strategy/jwt-strategy.service';
+import { ForgotPasswordDto } from '@user/dto/forgot-password.dto';
+import { ResetPasswordDto } from '@user/dto/reset-password-dto';
+import { LoginDto } from '@auth/dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -40,6 +42,11 @@ export class AuthService {
     return await this.jwtStrategyService.createAccessToken(user.id, user.email, loginDto.rememberMe);
   }
 
+  async signInWithGoogle(googleUser: GoogleUser): Promise<string> {
+    const user = await this.userService.findOrCreateGoogleUser(googleUser);
+    return await this.jwtStrategyService.createAccessToken(user.id, user.email);
+  }
+
   async verifyEmail(verifyEmailDto: VerifyEmailDto): Promise<string> {
     const user = await this.userService.verifyEmail(verifyEmailDto);
     return await this.jwtStrategyService.createAccessToken(user.id, user.email);
@@ -49,8 +56,15 @@ export class AuthService {
     await this.userService.resendVerificationCode(resendVerificationCodeDto);
   }
 
-  async signInWithGoogle(googleUser: GoogleUser): Promise<string> {
-    const user = await this.userService.findOrCreateGoogleUser(googleUser);
-    return await this.jwtStrategyService.createAccessToken(user.id, user.email);
+  async forgotPassword(forgotPasswordDto: ForgotPasswordDto): Promise<void> {
+    return this.userService.forgotPassword(forgotPasswordDto);
+  }
+
+  async resendResetPassword(forgotPasswordDto: ForgotPasswordDto): Promise<void> {
+    return this.userService.forgotPassword(forgotPasswordDto);
+  }
+
+  async resetPassword(resetPasswordDto: ResetPasswordDto): Promise<void> {
+    return this.userService.resetPassword(resetPasswordDto);
   }
 }
