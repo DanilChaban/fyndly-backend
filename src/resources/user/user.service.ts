@@ -98,6 +98,16 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
+  async me(userId: string): Promise<UserEntity> {
+    const user = await this.findUserById(userId);
+
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    return user;
+  }
+
   async verifyEmail(verifyEmailDto: VerifyEmailDto): Promise<UserEntity> {
     const { email, code } = verifyEmailDto;
     const user = await this.findUserByEmail(
@@ -239,6 +249,10 @@ export class UserService {
 
   async findUserByEmail(email: string, ...select: (keyof UserEntity)[]): Promise<UserEntity | null> {
     return this.userRepository.findOne({ where: { email }, select: ['id', 'email', ...select] });
+  }
+
+  async findUserById(id: string): Promise<UserEntity | null> {
+    return this.userRepository.findOne({ where: { id } });
   }
 
   private getVerificationCodeExpiresAt(): Date {
