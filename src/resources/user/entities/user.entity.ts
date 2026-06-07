@@ -21,6 +21,27 @@ export class UserEntity extends BaseEntity {
   @Column({ type: 'boolean', default: false, select: false })
   emailVerified: boolean;
 
+  @Column({ nullable: true })
+  firstName: string;
+
+  @Column({ nullable: true })
+  lastName: string;
+
+  @Column({ nullable: true })
+  phoneNumber: string;
+
+  @Column({ nullable: true })
+  country: string;
+
+  @Column({ nullable: true })
+  city: string;
+
+  @Column({ nullable: true })
+  avatar: string;
+
+  @Column({ nullable: true })
+  coverImage: string;
+
   @Column({ type: 'varchar', nullable: true, select: false })
   emailVerificationCode: string | null;
 

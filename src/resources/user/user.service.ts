@@ -1,4 +1,10 @@
-import { BadRequestException, ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -14,6 +20,7 @@ import { ResendVerificationCodeDto } from '@user/dto/resend-verification-code.dt
 import { GoogleUser } from '@user/types/google-user';
 import { ForgotPasswordDto } from '@user/dto/forgot-password.dto';
 import { ResetPasswordDto } from '@user/dto/reset-password-dto';
+import { UpdateUserDto } from '@user/dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -67,6 +74,24 @@ export class UserService {
     return savedUser;
   }
 
+  async updateUser(userid: string, updateUserDto: UpdateUserDto): Promise<UserEntity> {
+    const user = await this.findUserById(userid);
+
+    if (!user) {
+      throw new NotFoundException(ApiErrorCode.USER_NOT_FOUND);
+    }
+
+    user.firstName = updateUserDto.firstName ?? user.firstName;
+    user.lastName = updateUserDto.lastName ?? user.lastName;
+    user.phoneNumber = updateUserDto.phoneNumber ?? user.phoneNumber;
+    user.country = updateUserDto.country ?? user.country;
+    user.city = updateUserDto.city ?? user.city;
+    user.avatar = updateUserDto.avatar ?? user.avatar;
+    user.coverImage = updateUserDto.coverImage ?? user.coverImage;
+
+    return await this.userRepository.save(user);
+  }
+
   async findOrCreateGoogleUser(googleUser: GoogleUser): Promise<UserEntity> {
     const existingUser = await this.findUserByEmail(googleUser.email, 'googleId', 'emailVerified', 'username');
 
@@ -98,7 +123,7 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
-  async me(userId: string): Promise<UserEntity> {
+  async user(userId: string): Promise<UserEntity> {
     const user = await this.findUserById(userId);
 
     if (!user) {
